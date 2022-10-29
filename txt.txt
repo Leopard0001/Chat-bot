@@ -1,2 +1,2 @@
-чат бот с исскусственным интеллектом
-Chat bot with AI
+main - chat bot
+main2 - chat bot with AI
