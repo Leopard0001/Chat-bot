@@ -4,7 +4,13 @@ import nltk
 import json
 import pickle
 from sklearn.feature_extraction.text import CountVectorizer
+import nest_asyncio
+from telegram.ext import ApplicationBuilder
+from telegram.ext import MessageHandler
+from telegram.ext import filters
 
+nest_asyncio.apply()
+TOKEN = "5568538641:AAHUSFRbz-X28GUqOmhwXmHNPll_lSZHhAU"
 filename = "intents_dataset.json"
 
 # Считываем файл в словарь
@@ -60,10 +66,43 @@ def bot(text): # чат бот
     response = get_response(intent)
     return response
 
-intent = None
+# вызывать ее при каждом обращении к боту
+async def reply(update,context) -> None:
+    question = update.message.text
+    reply = bot(question)
+    print('>', question)
+    print('<', reply)
+    await update.message.reply_text(reply)
 
-while intent != 'bye': #запуск чат бота и его основная работа
-    text = input('< ')
-    print('>', bot(text))
-    intent = get_intent(text)
+# создаем объект приложения и связываем с токеном
+app = ApplicationBuilder().token(TOKEN).build()
+
+#Создаем обработчик текстовых сообщений
+handler = MessageHandler(filters.Text(), reply)
+
+# Добавляем обработчик
+app.add_handler(handler)
+
+# запускаем приложение: бот крутится, пока крутится колесо выполнения
+app.run_polling()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
